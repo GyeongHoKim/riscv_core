@@ -1,0 +1,6 @@
+# wave form simulation
+*.vcd
+bin/
+
+# Mac file manager
+*.DS_Store
