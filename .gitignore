@@ -1,5 +1,6 @@
 # wave form simulation
 *.vcd
+*.vvp
 bin/
 
 # Mac file manager
