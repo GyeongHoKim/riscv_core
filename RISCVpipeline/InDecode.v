@@ -34,7 +34,7 @@ module InDecode(
 	// control signal
 	output reg Ctl_ALUSrc_out, Ctl_MemtoReg_out, Ctl_RegWrite_out, Ctl_MemRead_out, Ctl_MemWrite_out, Ctl_Branch_out, Ctl_ALUOpcode1_out, Ctl_ALUOpcode0_out,
 	//
-	input 		[ 4:0] WriteReg, //reg주소 5bit = 32개의 주소
+	input 		[ 4:0] WriteReg, //reg二쇱5bit = 32媛쒖二쇱	input 		[31:0] PC_in, instruction_in, WriteData,
 	input 		[31:0] PC_in, instruction_in, WriteData,
 	
 	output reg 	[ 4:0] Rd_out, Rs1_out, Rs2_out,
@@ -65,13 +65,18 @@ module InDecode(
 	//Register
 	parameter reg_size = 32;
 	reg [31:0] Reg[0:reg_size-1]; //32bit reg
-	integer i;
+	integer i, idx;
 	always@(posedge clk) begin
 		// input
 		// 5bit Rs1, Rs2, WriteReg
 		// 32bit write data
-		if (reset)
+		if (reset) begin
 			Reg[0] <= 0;
+			for (idx = 1; idx < 32; idx = idx + 1) begin
+				Reg[idx] <= idx + 1;
+			end
+		end
+			
 		else if (Ctl_RegWrite_in && WriteReg != 0)
 			Reg[WriteReg] <= WriteData;
 		

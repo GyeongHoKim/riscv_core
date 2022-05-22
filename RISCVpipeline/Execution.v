@@ -19,7 +19,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module Execution(
-	input 	clk,
+	input 	clk, reset,
 	// control signal
 	input 		Ctl_ALUSrc_in, Ctl_MemtoReg_in, 	Ctl_RegWrite_in,Ctl_MemRead_in, Ctl_MemWrite_in, Ctl_Branch_in, Ctl_ALUOpcode1_in, Ctl_ALUOpcode0_in,
 	output reg						Ctl_MemtoReg_out, Ctl_RegWrite_out, Ctl_MemRead_out,	Ctl_MemWrite_out,	Ctl_Branch_out,
@@ -47,17 +47,17 @@ module Execution(
 	ALU B1 (.ALU_ctl(ALU_ctl), .in1(ALU_input1), .in2(ALU_input2), .out(ALUresult), .zero(zero));
 	
 	always@(posedge clk) begin
-		Ctl_MemtoReg_out	<= Ctl_MemtoReg_in;
-		Ctl_RegWrite_out	<= Ctl_RegWrite_in;
-		Ctl_MemRead_out		<= Ctl_MemRead_in;
-		Ctl_MemWrite_out	<= Ctl_MemWrite_in;
-		Ctl_Branch_out		<= Ctl_Branch_in;
+		Ctl_MemtoReg_out	<= reset ? 0 : Ctl_MemtoReg_in;
+		Ctl_RegWrite_out	<= reset ? 0 : Ctl_RegWrite_in;
+		Ctl_MemRead_out	<= reset ? 0 : Ctl_MemRead_in;
+		Ctl_MemWrite_out	<= reset ? 0 : Ctl_MemWrite_in;
+		Ctl_Branch_out		<= reset ? 0 : Ctl_Branch_in;
 		
-		Rd_out				<= Rd_in;
-		PCimm_out			<= (Immediate_in << 1) + PC_in;
-		ReadData2_out		<= ALU_input2;
-		ALUresult_out		<= ALUresult;
-		Zero_out			<= zero;
+		Rd_out				<= reset ? 0 : Rd_in;
+		PCimm_out			<= reset ? 0 : (Immediate_in << 1) + PC_in;
+		ReadData2_out		<= reset ? 0 : ALU_input2;
+		ALUresult_out		<= reset ? 0 : ALUresult;
+		Zero_out			<= reset ? 0 : zero;
 		
 	end
 endmodule
@@ -75,7 +75,7 @@ module ALU_control(
 	//4'b0010	:	add	==>ReadData1+ReadData2(Immediate_in)
 	//4'b0110	:	sub	==>ReadData1-ReadData2
 	//4'b0111 	:	blt (branch if less than)
-	//4'b1000 	:	bge (branch if greater equal)     // blt,bge는 zero=1로 만들기 위해서 out=0으로 세팅  
+	//4'b1000 	:	bge (branch if greater equal)     // blt,bgezero=1?만들긄해out=0?로 ?팅  
 	//4'b1100 	:	nor	==> ~(ReadData1|ReadData2)
 	//4'b1001 	:	shift left
 	//4'b1010 	:	shift right
@@ -119,7 +119,7 @@ module ALU(
 			4'b0110 :	out = in1 - in2;				// sub
 			4'b0111 :	out = in1 < in2 ? 32'b0 : 32'b1;	// blt (branch if less than)
 			4'b1000 :	out = in1 >= in2 ? 32'b0 : 32'b1;	// bge (branch if greater equal) 
-			// blt,bge는 zero=1로 만들기 위해서 out=0으로 세팅  
+			// blt,bgezero=1?만들긄해out=0?로 ?팅  
 			4'b1100 :	out = ~(in1 | in2);			// nor
 			4'b1001 :	out = in1 << in2;				// shift left
 			4'b1010 :	out = in1 >> in2;				// shift right
@@ -127,7 +127,7 @@ module ALU(
 		endcase
 	end
 						
-	assign zero = 	~|out;	//(ALU_ctl == 4'b0110) 			/ zero�� beq,bne Ȯ�� ����
-									//(ALU_ctl == 4'b0111&1000) 	/blt,bge ==> mem stage���� zero�� branch signal�� branch ���� ������.
+	assign zero = 	~|out;	//(ALU_ctl == 4'b0110) 			/ zero?? beq,bne ??? ????
+									//(ALU_ctl == 4'b0111&1000) 	/blt,bge ==> mem stage???? zero?? branch signal?? branch ???? ??????.
 endmodule
 		
