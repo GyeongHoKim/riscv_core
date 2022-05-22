@@ -30,7 +30,7 @@ module WB(
 	);	
 
 	always @(*) begin 
-		CtlRegWrite_out <= Ctl_RegWrite_in;
+		Ctl_RegWrite_out <= Ctl_RegWrite_in;
 		Rd_out <= Rd_in;
 		
 		WriteDatatoReg_out <= Ctl_MemtoReg_in ? ReadDatafromMem_in : ALUresult_in;
