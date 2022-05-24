@@ -72,7 +72,7 @@ module InDecode(
 		// 32bit write data
 		if (reset) begin
 			Reg[0] <= 0;
-			for (idx = 1; idx < 32; idx = idx + 1) begin
+			for (idx = 1; idx < 7; idx = idx + 1) begin
 				Reg[idx] <= idx + 1;
 			end
 		end
@@ -91,16 +91,16 @@ module InDecode(
 			7'b0000011 : Immediate = $signed(instruction_in[31:20]);
 			// I type - 2
 			7'b0010011 : Immediate = $signed(instruction_in[31:20]);
-			// S type
-			7'b0100011 : Immediate = $signed({instruction_in[31:25], instruction_in[11:7]});
 			// jalr
 			7'b1100111 : Immediate = $signed(instruction_in[31:20]);
+			// S type
+			7'b0100011 : Immediate = $signed({instruction_in[31:25], instruction_in[11:7]});
+			// SB type
+			7'b1100011 : Immediate = $signed({instruction_in[31], instruction_in[7], instruction_in[30:25], instruction_in[11:8]});
 			// jal
 			7'b1101111 : Immediate = $signed({instruction_in[31], instruction_in[19:12], instruction_in[20], instruction_in[30:21]});
 			// auipc
 			7'b0010111 : Immediate = $signed(instruction_in[31:12]);
-			// SB type
-			7'b1100011 : Immediate = $signed({instruction_in[31], instruction_in[7], instruction_in[30:25], instruction_in[11:8]});
 			default	  : Immediate = 32'bx;
 		endcase
 		
@@ -120,14 +120,14 @@ module InDecode(
 		jalr_out						<= reset ? 0 : jalr;
 		jal_out						<= reset ? 0 : jal;
 		auipc_out					<= reset ? 0 : auipc;
-		Ctl_RegWrite_out			<= reset ? 0 : Ctl_out[0];
-		Ctl_MemtoReg_out			<= reset ? 0 : Ctl_out[1];
-		Ctl_MemWrite_out			<= reset ? 0 : Ctl_out[2];
-		Ctl_MemRead_out			<= reset ? 0 : Ctl_out[3];
-		Ctl_Branch_out				<= reset ? 0 : Ctl_out[4];
-		Ctl_ALUOpcode0_out		<= reset ? 0 : Ctl_out[5];
-		Ctl_ALUOpcode1_out		<= reset ? 0 : Ctl_out[6];
 		Ctl_ALUSrc_out				<= reset ? 0 : Ctl_out[7];
+		Ctl_MemtoReg_out			<= reset ? 0 : Ctl_out[6];
+		Ctl_RegWrite_out			<= reset ? 0 : Ctl_out[5];
+		Ctl_MemRead_out			<= reset ? 0 : Ctl_out[4];
+		Ctl_MemWrite_out			<= reset ? 0 : Ctl_out[3];
+		Ctl_Branch_out				<= reset ? 0 : Ctl_out[2];
+		Ctl_ALUOpcode1_out		<= reset ? 0 : Ctl_out[1];
+		Ctl_ALUOpcode0_out		<= reset ? 0 : Ctl_out[0];
 		Immediate_out				<= reset ? 0 : Immediate;
 	end
 
