@@ -3,13 +3,28 @@
 32 bit RISC-V Core
 
 # Overview
-not yet
+
+Our own RISC-V CPU RTL design.
+
+![RISCVcore](./img/RISCVcore.png)
 
 # Features
 not yet
 
 # Directories
-not yet
+
+| Name                | Contents                                            |
+| ------------------- | --------------------------------------------------- |
+| InFetch             | Fetch module and test bench for fetching            |
+| InDecode            | Decode module and test bench for decoding           |
+| Execution           | Execution module and test bench for executing       |
+| Memory              | Memory module and test bench for executing          |
+| WB                  | Write Back module                                   |
+| RISCVpipeline       | RISC-V pipelined CPU core and Test bench            |
+
+# References
+
+Computer Organization and Design RISC-V Edition The Hardware Software Interface by David A. Patterson, John L.Hennessy
 
 # How to simulate Each Verilog Modules on Mac
 
