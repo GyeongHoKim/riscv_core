@@ -34,12 +34,11 @@ module RISCVpipeline(
 	wire wb_ctl_0,  wb_ctl_1,  wb_ctl_2,  wb_ctl_3,  wb_ctl_4,  wb_ctl_5,  wb_ctl_6,  wb_ctl_7;
 	
 	wire [31:0]  ind_pc;
-    wire [31:0]	 ind_data1, ind_data2, ind_imm,	exe_data2, exe_addr, exe_result, mem_addr, mem_result, mem_data, wb_data;
-	wire [4:0]	 ind_rd, exe_rd, mem_rd, wb_rd;
+   wire [31:0]	 ind_data1, ind_data2, ind_imm,	exe_data2, exe_addr, exe_result, mem_addr, mem_result, mem_data, wb_data;
+	wire [4:0]	 ind_rd, exe_rd, mem_rd, wb_rd, a, b;
 	wire [6:0]	 ind_funct7;
 	wire [2:0]	 ind_funct3;
 	wire 		ind_jal, ind_jalr, exe_zero, mem_PCSrc, ind_auipc;
-	wire [4:0]	Rs1_out, Rs2_out;
 	
 	
 	
@@ -57,20 +56,20 @@ module RISCVpipeline(
 ////////////////////////
 	InDecode A3_InDecode(
 	.Ctl_ALUSrc_out(ind_ctl_7),
-	.Ctl_MemtoReg_out(ind_ctl_1),
-	.Ctl_RegWrite_out(ind_ctl_0),
-	.Ctl_MemRead_out(ind_ctl_5),
-	.Ctl_MemWrite_out(ind_ctl_2),
-	.Ctl_Branch_out(ind_ctl_4),
-	.Ctl_ALUOpcode0_out(ind_ctl_5),
-	.Ctl_ALUOpcode1_out(ind_ctl_6),
+	.Ctl_MemtoReg_out(ind_ctl_6),
+	.Ctl_RegWrite_out(ind_ctl_5),
+	.Ctl_MemRead_out(ind_ctl_4),
+	.Ctl_MemWrite_out(ind_ctl_3),
+	.Ctl_Branch_out(ind_ctl_2),
+	.Ctl_ALUOpcode0_out(ind_ctl_0),
+	.Ctl_ALUOpcode1_out(ind_ctl_1),
 	.WriteReg(wb_rd),
 	.PC_in(current_pc),
-	.instruction_in(instruction),
+	.instruction_in(ins),
 	.WriteData(wb_data),
 	.Rd_out(ind_rd),
-	.Rs1_out(Rs1_out),
-	.Rs2_out(Rs2_out),
+	.Rs1_out(a),
+	.Rs2_out(b),
 	.PC_out(ind_pc),
 	.ReadData1_out(ind_data1),
 	.ReadData2_out(ind_data2),
@@ -82,24 +81,25 @@ module RISCVpipeline(
 	.auipc_out(ind_auipc),
 	.clk(clk),
 	.reset(rst),
-	.Ctl_RegWrite_in(wb_ctl_0)
+	.Ctl_RegWrite_in(wb_ctl_5)
 	);
 ////////////////////////
 	Execution A4_Execution(
 		.clk(clk),
+		.reset(rst),
 		.Ctl_ALUSrc_in(ind_ctl_7),
-		.Ctl_MemtoReg_in(ind_ctl_1),
-		.Ctl_RegWrite_in(ind_ctl_0),
-		.Ctl_MemRead_in(ind_ctl_3),
-		.Ctl_MemWrite_in(ind_ctl_2),
-		.Ctl_Branch_in(ind_ctl_4),
-		.Ctl_ALUOpcode1_in(ind_ctl_5),
-		.Ctl_ALUOpcode0_in(ind_ctl_6),
-		.Ctl_MemtoReg_out(exe_ctl_1),
-		.Ctl_RegWrite_out(exe_ctl_0),
-		.Ctl_MemRead_out(exe_ctl_3),
-		.Ctl_MemWrite_out(exe_ctl_2),
-		.Ctl_Branch_out(exe_ctl_4),
+		.Ctl_MemtoReg_in(ind_ctl_6),
+		.Ctl_RegWrite_in(ind_ctl_5),
+		.Ctl_MemRead_in(ind_ctl_4),
+		.Ctl_MemWrite_in(ind_ctl_3),
+		.Ctl_Branch_in(ind_ctl_2),
+		.Ctl_ALUOpcode0_in(ind_ctl_0),
+		.Ctl_ALUOpcode1_in(ind_ctl_1),
+		.Ctl_MemtoReg_out(exe_ctl_6),
+		.Ctl_RegWrite_out(exe_ctl_5),
+		.Ctl_MemRead_out(exe_ctl_4),
+		.Ctl_MemWrite_out(exe_ctl_3),
+		.Ctl_Branch_out(exe_ctl_2),
 		.Rd_in(ind_rd),
 		.Rd_out(exe_rd),
 		.Immediate_in(ind_imm),
@@ -111,23 +111,23 @@ module RISCVpipeline(
 		.Zero_out(exe_zero),
 		.ALUresult_out(exe_result),
 		.PCimm_out(exe_addr),
-		.ReadData2_out(mem_data)
+		.ReadData2_out(exe_data2)
 	);
 ////////////////////////			
 	Memory A6_Memory( 
 		.reset(rst),
 		.clk(clk),
-		.Ctl_MemtoReg_in(exe_ctl_1),
-		.Ctl_RegWrite_in(exe_ctl_0),
-		.Ctl_MemRead_in(exe_ctl_3),
-		.Ctl_MemWrite_in(exe_ctl_2),
-		.Ctl_Branch_in(exe_ctl_4),
-		.Ctl_MemtoReg_out(mem_ctl_1),
-		.Ctl_RegWrite_out(mem_ctl_0),
+		.Ctl_MemtoReg_in(exe_ctl_6),
+		.Ctl_RegWrite_in(exe_ctl_5),
+		.Ctl_MemRead_in(exe_ctl_4),
+		.Ctl_MemWrite_in(exe_ctl_3),
+		.Ctl_Branch_in(exe_ctl_2),
+		.Ctl_MemtoReg_out(mem_ctl_6),
+		.Ctl_RegWrite_out(mem_ctl_5),
 		.Rd_in(exe_rd),
-		.Rd_out(wb_rd),
+		.Rd_out(mem_rd),
 		.Zero_in(exe_zero),
-		.Write_Data(ind_data2),
+		.Write_Data(exe_data2),
 		.ALUresult_in(exe_result),
 		.PCimm_in(exe_addr),
 		.PCSrc(mem_PCSrc),
@@ -137,9 +137,9 @@ module RISCVpipeline(
 	);
 ////////////////////////
 	WB A7_WB(
-		.Ctl_RegWrite_in(mem_ctl_0),
-		.Ctl_MemtoReg_in(mem_ctl_1),
-		.Ctl_RegWrite_out(wb_ctl_0),
+		.Ctl_RegWrite_in(mem_ctl_5),
+		.Ctl_MemtoReg_in(mem_ctl_6),
+		.Ctl_RegWrite_out(wb_ctl_5),
 		.Rd_in(mem_rd),
 		.ReadDatafromMem_in(mem_data),
 		.ALUresult_in(mem_result),

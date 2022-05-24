@@ -41,11 +41,6 @@ module tb_RISCVpipeline;
 	);
 
 	initial begin
-		$dumpfile("pipelineWaveForm.vcd");
-		$dumpvars(0,tb_RISCVpipeline);
-	end
-
-	initial begin
 		rst =1;
 		#54 rst = 0;
 	end
