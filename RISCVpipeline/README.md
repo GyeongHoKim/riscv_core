@@ -92,4 +92,4 @@ mem[22] = 12.
 This is arbitary initial value for the test. 
 Waveform should be like below.
 
-![darksocv2](../img/darksocv2.PNG)
+![darksocv2](../img/darksocv2.png)
