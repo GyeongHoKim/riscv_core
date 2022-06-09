@@ -36,9 +36,10 @@ module Memory(
 
 	output reg			 jal_out, jalr_out,
 	output reg	[31:0] Read_Data, ALUresult_out,
-	output reg	[31:0] PCimm_out, PC_out
+	output reg	[31:0] PC_out,
+	output		[31:0] PCimm_out
    );
-	reg [31:0] RAM [0:1023]; //32bit register 128 row created
+	reg [31:0] RAM [0:2051]; //32bit register 128 row created
 	
 	wire branch;
 	//Branch:[4]
@@ -72,8 +73,6 @@ module Memory(
 		Ctl_RegWrite_out <= Ctl_RegWrite_in;
 	end
 	
-	always@(*) begin
-		assign PCimm_out = (jalr_in) ? ALUresult_in : PCimm_in;
-	end
+	assign PCimm_out = (jalr_in) ? ALUresult_in : PCimm_in;
 	
 endmodule

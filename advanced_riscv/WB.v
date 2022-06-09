@@ -36,7 +36,8 @@ module WB(
 		Rd_out <= Rd_in;
 		
 		if (Ctl_MemtoReg_in) WriteDatatoReg_out <= ReadDatafromMem_in;
-		else if (jalr_in || jal_in) WriteDatatoReg_out <= PC_in + 4;
+		else if ((jalr_in || jal_in) && Rd_in != 0) WriteDatatoReg_out <= PC_in + 4;
+		else if ((jalr_in || jal_in) && Rd_in == 0) WriteDatatoReg_out <= 0;
 		else	WriteDatatoReg_out <= ALUresult_in;
 	end 
 endmodule

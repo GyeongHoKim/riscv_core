@@ -35,8 +35,9 @@ module tb_RISCVpipeline;
 	);
 
 	initial begin
-		rst =1;
-		#54 rst = 0;
+		rst =0;
+		#50 rst = 1;
+		#50 rst = 0;
 	end
 	
 	initial begin
