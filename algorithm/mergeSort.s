@@ -1,119 +1,113 @@
-#initialization
-# init sp
-addi x31, x0, 2000
-slli x31, x31, 2
-# init return addr
-addi x1, x0, 0
-# init array start
-addi x2, x0, 0
-# init array end, x29
-addi x29, x0, 999
-slli x29, x29, 2
-mv x3, x29
-# init array mid
-add x4, x2, x3
-srli x4, x4, 1
-#init sorted start, x30
-addi x30, x0, 1000
-slli x30, x30, 2
-
-addi x28, x0, 1024
-slli x28, x28, 3
-
-#Divide
-mergeSort:
-sw x1, 0(x31)
-sw x2, 4(x31) # we will use x2 as start addr
-sw x3, 8(x31) # we will use x3 as end addr
-sw x4, 12(x31) # we will use x4 as mid addr
-addi x31, x31, 16
-
-bge x2, x3, return # return when element remains only one
-add x4, x2, x3 # calculate middle addr
-srli x4, x4, 1
-mv x3, x4
-jal x1, mergeSort
-
-lw x3, 8(x31)
-lw x4, 12(x31)
-addi x31, x31, -16
-
-addi x2, x4, 4
-jal x1, mergeSort
-
-jal x0, merge
-
-return:
-bne x31, x28, return1 # x28 is the end of the ram + 16.
-addi x31, x31, -16
-return1:
-lw x1, 0(x31)
-addi x31, x31, -16
-jalr x0, x1, 0
-
-#Conquer
-merge:
-lw x2, 4(x31)
-lw x3, 8(x31)
-lw x4, 12(x31)
-
-mv x6, x2 # i
-mv x7, x4 # j
-addi x7, x7, 4
-mv x8, x2 # k
-mv x9, x2 # t
-
-loop:
-lw x10, 0(x6)
-lw x11, 0(x7)
-
-bgt x6, x4, over
-bgt x7, x3, over
-
-blt x10, x11, smalli
-
-add x12, x30, x8
-sw x11, 0(x12)
-addi x8, x8, 4
-addi x7, x7, 4
-
-smalli:
-add x12, x30, x8
-sw x10, 0(x12)
-addi x8, x8, 4
-addi x6, x6, 4
-jal x0, loop
-
-over:
-bgt x6, x4, over2 # first while loop
-add x12, x30, x8
-sw x10, 0(x12)
-addi x8, x8, 4
-addi x6, x6, 4
+addi a0, x0, 0
+addi t0, x0, 1024
+slli t0, t0, 2
+add a1, a0, t0
+addi sp, x0, 1100
+slli sp, sp, 2
+jal ra, mergesort
 jal x0, over
 
-over2:
-bgt x7, x3, over3
-add x12, x30, x8
-sw x11, 0(x12)
-addi x8, x8, 4
-addi x7, x7, 4
-jal x0, over2
+mergesort:
 
-over3:
-bgt x9, x3, end
-add x12, x30, x9
-lw x13, 0(x12)
-sw x13 0(x9)
-addi x9, x9, 4
-jal x0, over3
+   # Stack management
+   addi sp, sp, -16              # Adjust stack pointer
+   sw ra, 0(sp)                  # Load return address
+   sw a0, 4(sp)                  # Load first element address
+   sw a1, 8(sp)                 # Load last element address
 
-end:
-bne x2, x0, return2
-bne x4, x29, return2
-addi x1, x0 400
+   
+   # Base case
+   li t1, 4                      # Size of one element
+   sub t0, a1, a0                # Calculate number of elements
+   ble t0, t1, mergesort_end     # If only one element remains in the array, return
 
-return2:
-lw x1, 0(x31)
-addi x31, x31, -16
-jalr x0, x1, 0
+   srli  t0, t0, 1               # Divide array size to get half of the element
+   add a1, a0, t0                # Calculate array midpoint address
+   sw a1, 12(sp)                 # Store it on the stack
+
+   jal mergesort                 # Recursive call on first half of the array
+
+   lw a0, 12(sp)                 # Load midpoint back from the stack
+   lw a1, 8(sp)                 # Load last element address back from the stack
+
+   jal mergesort                 # Recursive call on second half of the array
+
+   lw a0, 4(sp)                  # Load first element address back from the stack
+   lw a1, 12(sp)                 # Load midpoint address back form the stack
+   lw a2, 8(sp)                 # Load last element address back from the stack
+
+   jal merge                     # Merge two sorted sub-arrays
+
+mergesort_end:
+   lw ra, 0(sp)
+   addi sp, sp, 16
+   ret
+
+##
+# Merge(*testArray, first, midpoint, last)
+# param a0 -> first address of first array   
+# param a1 -> first address of second array
+# param a2 -> last address of second array
+##
+merge:
+
+   # Stack management
+   addi sp, sp, -16              # Adjust stack pointer
+   sw ra, 0(sp)                  # Load return address
+   sw a0, 4(sp)                  # Load first element of first array address
+   sw a1, 8(sp)                 # Load first element of second array address
+   sw a2, 12(sp)                 # Load last element of second array address
+
+   mv s0, a0                     # First half address copy 
+   mv s1, a1                     # Second half address copy
+
+   merge_loop:
+
+      mv t0, s0                  # copy first half position address
+      mv t1, s1                  # copy second half position address
+      lw t0, 0(t0)               # Load first half position value
+      lw t1, 0(t1)               # Load second half position value   
+
+      bgt t1, t0, shift_skip     # If lower value is first, no need to perform operations
+
+      mv a0, s1                  # a0 -> element to move
+      mv a1, s0                  # a1 -> address to move it to
+      jal shift                  # jump to shift 
+      
+      addi s1, s1, 4
+
+      shift_skip: 
+
+            addi s0, s0, 4          # Increment first half index and point to the next element
+            lw a2, 12(sp)           # Load back last element address
+
+            bge s0, a2, merge_loop_end
+            bge s1, a2, merge_loop_end
+            beq x0, x0, merge_loop
+
+      ##
+      # Shift array element to a lower address
+      # param a0 -> address of element to shift
+      # param a1 -> address of where to move a0
+      ##
+      shift:
+
+         ble a0, a1, shift_end      # Location reached, stop shifting
+         addi t3, a0, -4            # Go to the previous element in the array
+         lw t4, 0(a0)               # Get current element pointer
+         lw t5, 0(t3)               # Get previous element pointer
+         sb t4, 0(t3)               # Copy current element pointer to previous element address
+         sb t5, 0(a0)               # Copy previous element pointer to current element address
+         mv a0, t3                  # Shift current position back
+         beq x0, x0, shift          # Loop again
+
+      shift_end:
+
+         ret
+
+   merge_loop_end:
+
+      lw ra, 0(sp)
+      addi sp, sp, 16
+      ret
+over:
