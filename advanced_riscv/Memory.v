@@ -52,7 +52,7 @@ module Memory(
 	end
 	
 	//DataMemory 
-	always @(posedge clk, posedge reset) begin  
+	always @(posedge clk) begin  
 		if (Ctl_MemWrite_in)
 			RAM[ALUresult_in >> 2] <= Write_Data;
 		if (reset)
