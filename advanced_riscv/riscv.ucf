@@ -1,0 +1,47 @@
+NET "clk"	LOC = P55;
+
+NET "rst"	LOC = P74;
+
+NET "Switch[5]" LOC = P46;
+NET "Switch[4]" LOC = P45;
+NET "Switch[3]" LOC = P44;
+NET "Switch[2]" LOC = P43;
+NET "Switch[1]" LOC = P41;
+NET "Switch[0]" LOC = P40;
+
+#NET "key[0]" LOC = P74;
+NET "key[1]" LOC = P75;
+#NET "key[2]" LOC = P78;
+#NET "key[3]" LOC = P79;
+#NET "key[4]" LOC = P80;
+
+NET "digit[3]" LOC = P87;
+NET "digit[2]" LOC = P88;
+NET "digit[1]" LOC = P92;
+NET "digit[0]" LOC = P93;
+
+NET "fnd[7]" LOC = P102;
+NET "fnd[6]" LOC = P101;
+NET "fnd[5]" LOC = P100;
+NET "fnd[4]" LOC = P99;
+NET "fnd[3]" LOC = P98;
+NET "fnd[2]" LOC = P97;
+NET "fnd[1]" LOC = P95;
+NET "fnd[0]" LOC = P94;
+
+NET "LED[15]" LOC = P24;
+NET "LED[14]" LOC = P23;
+NET "LED[13]" LOC = P22;
+NET "LED[12]" LOC = P21;
+NET "LED[11]" LOC = P17;
+NET "LED[10]" LOC = P16;
+NET "LED[9]" LOC = P15;
+NET "LED[8]" LOC = P14;
+NET "LED[7]" LOC = P12;
+NET "LED[6]" LOC = P11;
+NET "LED[5]" LOC = P10;
+NET "LED[4]" LOC = P9;
+NET "LED[3]" LOC = P8;
+NET "LED[2]" LOC = P7;
+NET "LED[1]" LOC = P6;
+NET "LED[0]" LOC = P5;
