@@ -86,7 +86,7 @@ module ALU_control(
 	//4'b0010	:	add	==>ReadData1+ReadData2(Immediate_in)
 	//4'b0110	:	sub	==>ReadData1-ReadData2
 	//4'b0111 	:	blt (branch if less than)
-	//4'b1000 	:	bge (branch if greater equal)     // blt,bgezero=1?¸¸µéƒGÇØout=0?·Î ?ÆÃ  
+	//4'b1000 	:	bge (branch if greater equal)     // blt,bgezero=1?ë§Œë“¤ê¸„í•´out=0?ë¡œ ?íŒ…  
 	//4'b1100 	:	nor	==> ~(ReadData1|ReadData2)
 	//4'b1001 	:	shift left
 	//4'b1010 	:	shift right
@@ -130,7 +130,7 @@ module ALU(
 			4'b0110 :	out = in1 - in2;				// sub
 			4'b0111 :	out = in1 < in2 ? 32'b0 : 32'hffffffff;	// blt (branch if less than)
 			4'b1000 :	out = in1 >= in2 ? 32'b0 : 32'hffffffff;	// bge (branch if greater equal) 
-			// blt,bgezero=1?¸¸µéƒGÇØout=0?·Î ?ÆÃ  
+			// blt,bgezero=1?ë§Œë“¤ê¸„í•´out=0?ë¡œ ?íŒ…  
 			4'b1100 :	out = ~(in1 | in2);			// nor
 			4'b1001 :	out = in1 << in2;				// shift left
 			4'b1010 :	out = in1 >> in2;				// shift right

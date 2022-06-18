@@ -2,7 +2,7 @@ addi a0, x0, 0
 addi t0, x0, 1024
 slli t0, t0, 2
 add a1, a0, t0
-addi sp, x0, 1100
+addi sp, x0, 1068
 slli sp, sp, 2
 jal ra, mergesort
 jal x0, over

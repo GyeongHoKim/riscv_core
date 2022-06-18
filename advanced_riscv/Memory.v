@@ -39,7 +39,7 @@ module Memory(
 	output reg	[31:0] PC_out,
 	output		[31:0] PCimm_out
    );
-	reg [31:0] RAM [0:2051]; //32bit register 128 row created
+	reg [31:0] RAM [0:1067]; //32bit register 128 row created
 	
 	wire branch;
 	//Branch:[4]
