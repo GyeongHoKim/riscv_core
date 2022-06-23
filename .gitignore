@@ -5,3 +5,6 @@ bin/
 
 # Mac file manager
 *.DS_Store
+
+# data analysis
+*.csv
