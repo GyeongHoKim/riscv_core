@@ -1,29 +1,10 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    19:13:50 03/26/2022 
-// Design Name: 
-// Module Name:    InFetch 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
 
 module InFetch(
 	input 				 clk, reset,
 	input 				 PCSrc, 		// control signal
 	input					 PCWrite,
-	input 		[31:0] PCimm_in, // PC + imm °è»ê °ª
+	input 		[31:0] PCimm_in, // PC + imm ï¿½ï¿½ï¿½ ï¿½ï¿½
 	output	 	[31:0] instruction_out,
 	output reg	[31:0] PC_out
    );
@@ -75,7 +56,7 @@ module iMEM(
 	output reg	[31:0] instruction_out
 	);
 	parameter 			 ROM_size = 1024;
-	reg 			[31:0] ROM [0:ROM_size-1]; // 32bit ROM »ý¼º
+	reg 			[31:0] ROM [0:ROM_size-1]; // 32bit ROM ï¿½ï¿½ï¿½ï¿½
 	
 
 	integer i;

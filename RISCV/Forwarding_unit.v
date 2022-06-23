@@ -1,23 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    20:40:03 05/27/2022 
-// Design Name: 
-// Module Name:    Forwarding_unit 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
 module Forwarding_unit(
 	input mem_Ctl_RegWrite_in, wb_Ctl_RegWrite_in,
 	input [4:0] Rs1_in, Rs2_in, mem_Rd_in, wb_Rd_in,

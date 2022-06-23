@@ -1,23 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    19:14:42 03/26/2022 
-// Design Name: 
-// Module Name:    InDecode 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
 `define LUI     7'b01101_11      // lui   rd,imm[31:12]
 `define AUIPC   7'b00101_11      // auipc rd,imm[31:12]
 `define JAL     7'b11011_11      // jal   rd,imm[xxxxx]
@@ -31,10 +12,16 @@
 
 
 module InDecode(
+	input	clk, reset,
+	// data hazard
+	input	stall,
+	// control hazard
+	input flush,
+	
 	// control signal
 	output reg Ctl_ALUSrc_out, Ctl_MemtoReg_out, Ctl_RegWrite_out, Ctl_MemRead_out, Ctl_MemWrite_out, Ctl_Branch_out, Ctl_ALUOpcode1_out, Ctl_ALUOpcode0_out,
 	//
-	input 		[ 4:0] WriteReg, //reg二쇱5bit = 32媛쒖二쇱	input 		[31:0] PC_in, instruction_in, WriteData,
+	input 		[ 4:0] WriteReg, //reg주�5bit = 32개�주�	input 		[31:0] PC_in, instruction_in, WriteData,
 	input 		[31:0] PC_in, instruction_in, WriteData,
 	
 	output reg 	[ 4:0] Rd_out, Rs1_out, Rs2_out,
@@ -43,7 +30,7 @@ module InDecode(
 	output reg 	[ 2:0] funct3_out,	// RISC-V
 	output reg 			 jalr_out, jal_out, auipc_out,
 	
-	input					 clk, reset, Ctl_RegWrite_in
+	input					 Ctl_RegWrite_in
 	);	
 	
 	wire [6:0]	opcode = instruction_in[6:0];
@@ -60,6 +47,10 @@ module InDecode(
 	
 	// control unit RISC-V
 	Control_unit B0 (.opcode(instruction_in[6:0]), .Ctl_out(Ctl_out), .reset(reset));
+	reg [7:0] Control;
+	always @(*) begin
+		Control = flush || stall ? 1'b0 : Ctl_out;
+	end
 
 	
 	//Register
@@ -72,9 +63,6 @@ module InDecode(
 		// 32bit write data
 		if (reset) begin
 			Reg[0] <= 0;
-			for (idx = 1; idx < 7; idx = idx + 1) begin
-				Reg[idx] <= idx + 1;
-			end
 		end
 			
 		else if (Ctl_RegWrite_in && WriteReg != 0)
@@ -101,7 +89,7 @@ module InDecode(
 			7'b1101111 : Immediate = $signed({instruction_in[31], instruction_in[19:12], instruction_in[20], instruction_in[30:21]});
 			// auipc
 			7'b0010111 : Immediate = $signed(instruction_in[31:12]);
-			default	  : Immediate = 32'bx;
+			default	  : Immediate = 32'b0;
 		endcase
 		
 	end
@@ -115,19 +103,19 @@ module InDecode(
 		Rd_out						<= reset ? 0 : Rd;
 		Rs1_out						<= reset ? 0 : Rs1;
 		Rs2_out						<= reset ? 0 : Rs2;
-		ReadData1_out 				<= reset ? 0 : Reg[Rs1];
-		ReadData2_out 				<= reset ? 0 : Reg[Rs2];
+		ReadData1_out 				<= reset ? 0 : Ctl_RegWrite_in && WriteReg == Rs1 ? WriteData : Reg[Rs1];
+		ReadData2_out 				<= reset ? 0 : Ctl_RegWrite_in && WriteReg == Rs2 ? WriteData : Reg[Rs2];
 		jalr_out						<= reset ? 0 : jalr;
 		jal_out						<= reset ? 0 : jal;
 		auipc_out					<= reset ? 0 : auipc;
-		Ctl_ALUSrc_out				<= reset ? 0 : Ctl_out[7];
-		Ctl_MemtoReg_out			<= reset ? 0 : Ctl_out[6];
-		Ctl_RegWrite_out			<= reset ? 0 : Ctl_out[5];
-		Ctl_MemRead_out			<= reset ? 0 : Ctl_out[4];
-		Ctl_MemWrite_out			<= reset ? 0 : Ctl_out[3];
-		Ctl_Branch_out				<= reset ? 0 : Ctl_out[2];
-		Ctl_ALUOpcode1_out		<= reset ? 0 : Ctl_out[1];
-		Ctl_ALUOpcode0_out		<= reset ? 0 : Ctl_out[0];
+		Ctl_ALUSrc_out				<= reset ? 0 : Control[7];
+		Ctl_MemtoReg_out			<= reset ? 0 : Control[6];
+		Ctl_RegWrite_out			<= reset ? 0 : Control[5];
+		Ctl_MemRead_out			<= reset ? 0 : Control[4];
+		Ctl_MemWrite_out			<= reset ? 0 : Control[3];
+		Ctl_Branch_out				<= reset ? 0 : Control[2];
+		Ctl_ALUOpcode1_out		<= reset ? 0 : Control[1];
+		Ctl_ALUOpcode0_out		<= reset ? 0 : Control[0];
 		Immediate_out				<= reset ? 0 : Immediate;
 	end
 
@@ -152,7 +140,7 @@ module Control_unit(
 				7'b11000_11 : Ctl_out = 8'b000001_01;
 				7'b11011_11 : Ctl_out = 8'b001001_00;
 				7'b11001_11 : Ctl_out = 8'b101001_11;
-				7'b00101_11: Ctl_out = 8'b101000_00;
+				7'b00101_11 : Ctl_out = 8'b101000_00;
 				default 		: Ctl_out = 8'b0;
 			endcase
 	end

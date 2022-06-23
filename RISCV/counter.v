@@ -1,29 +1,10 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    19:13:02 03/26/2022 
-// Design Name: 
-// Module Name:    counter 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
 `include "./config.vh"
 
 module counter(
 	input 			 clk, rst,
-	input 	[31:0] pc_in, // pc = 400ÀÌ¸é sorting Á¾·á¸¦ ÀÇ¹Ì
-`ifndef simulation	//°ËÁõ
+	input 	[31:0] pc_in, // pc = 400ï¿½Ì¸ï¿½ sorting ï¿½ï¿½ï¿½á¸¦ ï¿½Ç¹ï¿½
+`ifndef simulation	//ï¿½ï¿½ï¿½ï¿½
 	input					 key1,
 	input			[31:0] mem_data,
 	output				 pass,
@@ -34,12 +15,12 @@ module counter(
 	
 	output 	[ 1:0] LED_clk,
 	output 			 clk_out,
-	output	[31:0] clk_count_out // sorting Á¾·áµÉ¶§±îÁö °É¸° cycle
+	output	[31:0] clk_count_out // sorting ï¿½ï¿½ï¿½ï¿½É¶ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½É¸ï¿½ cycle
     );
 	
 `ifdef simulation
 	assign clk_out = count[0];
-`else 	//[27:0]ÁÖ±â 2^28(¾à 268,000,000)¹è ´Ã¸² FPGA ÁÖÆÄ¼ö 50MHz = 20ns => 5.36ÃÊ
+`else 	//[27:0]ï¿½Ö±ï¿½ 2^28(ï¿½ï¿½ 268,000,000)ï¿½ï¿½ ï¿½Ã¸ï¿½ FPGA ï¿½ï¿½ï¿½Ä¼ï¿½ 50MHz = 20ns => 5.36ï¿½ï¿½
 	assign clk_out =  (Switch==6'b111111) ? 0: 
 							(Switch==6'b111110) ? count[24]:
 							(Switch==6'b111100) ? count[20]:
@@ -78,7 +59,7 @@ module counter(
 		end
 	end
 	
-`ifndef simulation //°ËÁõ
+`ifndef simulation //ï¿½ï¿½ï¿½ï¿½
 	reg 	[31:0] clk_address = 0;
 	reg 			 pass = 0;
 	reg	[31:0] pass_count = 0;

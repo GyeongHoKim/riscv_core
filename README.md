@@ -8,29 +8,27 @@ Our own RISC-V CPU RTL design.
 
 ![RISCVcore](./img/RISCVcore.png)
 
-# Features
-not yet
-
 # Directories
 
 | Name                | Contents                                            |
 | ------------------- | --------------------------------------------------- |
-| InFetch             | Fetch module and test bench for fetching            |
-| InDecode            | Decode module and test bench for decoding           |
-| Execution           | Execution module and test bench for executing       |
-| Memory              | Memory module and test bench for executing          |
-| WB                  | Write Back module                                   |
-| RISCVpipeline       | RISC-V pipelined CPU core and Test bench            |
+| RISCV               | FPGA codes for actual working                       |
+| algorithm           | MergeSort assembly & Instructions for this cpu      |
+| testingModules      | Testing Each 5 stage pipeline modules               |
+| BPML                | Machine Learning for Dynamic Branch Prediction      |
+| img                 | Images for README                                   |
 
 # References
 
-Computer Organization and Design RISC-V Edition The Hardware Software Interface by David A. Patterson, John L.Hennessy
+* Computer Organization and Design RISC-V Edition The Hardware Software Interface by David A. Patterson, John L.Hennessy
+* [vezzalinistefano/riscv-mergesort](https://github.com/vezzalinistefano/riscv-mergesort)
 
-# How to simulate Each Verilog Modules on Mac
+# How to simulate Each Verilog Modules
 
-xilinx is not available in Mac.
+if your os is windows, then install Xilinx ISE Design Suite.
+However, Xilinx is not available in Mac.
 
-## installation
+## installation for Mac
 
 to install icarus-verilog,
 
@@ -41,7 +39,7 @@ brew install icarus-verilog
 to install gtkwave,
 you just google "gtkwave" and download it anyway.
 
-## icarus-verilog
+### icarus-verilog
 
 for compile verilog files, 
 
@@ -63,6 +61,6 @@ and then, you have to make waveform file(.vcd file).
 vvp <output file name you made above>
 ```
 
-## gtkwave
+### gtkwave
 
 just double click on your waveform file(.vcd file) you made above.

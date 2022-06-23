@@ -1,23 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    19:14:42 03/26/2022 
-// Design Name: 
-// Module Name:    InDecode 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
 `define LUI     7'b01101_11      // lui   rd,imm[31:12]
 `define AUIPC   7'b00101_11      // auipc rd,imm[31:12]
 `define JAL     7'b11011_11      // jal   rd,imm[xxxxx]
@@ -40,7 +21,7 @@ module InDecode(
 	// control signal
 	output reg Ctl_ALUSrc_out, Ctl_MemtoReg_out, Ctl_RegWrite_out, Ctl_MemRead_out, Ctl_MemWrite_out, Ctl_Branch_out, Ctl_ALUOpcode1_out, Ctl_ALUOpcode0_out,
 	//
-	input 		[ 4:0] WriteReg, //regì£¼ì5bit = 32ê°œìì£¼ì	input 		[31:0] PC_in, instruction_in, WriteData,
+	input 		[ 4:0] WriteReg, 
 	input 		[31:0] PC_in, instruction_in, WriteData,
 	
 	output reg 	[ 4:0] Rd_out, Rs1_out, Rs2_out,
@@ -81,7 +62,12 @@ module InDecode(
 		// 5bit Rs1, Rs2, WriteReg
 		// 32bit write data
 		if (reset) begin
-			Reg[0] <= 0;
+			for (i = 0; i < 32; i = i + 1) begin
+				Reg[i] <= 32'b0;
+			end
+			for (idx = 1; idx < 7; idx = idx + 1) begin
+				Reg[idx] <= idx + 1;
+			end
 		end
 			
 		else if (Ctl_RegWrite_in && WriteReg != 0)
