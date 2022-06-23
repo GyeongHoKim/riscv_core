@@ -1,6 +1,4 @@
-# BIG3003, Spring 2022
-Homework #8 is due on June 14, 2022  
-융합전자공학부 2018006171 김경호
+# Data Analysis for Branch Prediction
 
 ## 목차
 
